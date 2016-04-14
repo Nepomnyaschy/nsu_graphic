@@ -11,10 +11,10 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) :
 
     slider = new QSlider(Qt::Horizontal);
     slider->setMaximum(1000);
-    slider->setMinimum(-1000);
+    slider->setMinimum(0);
     spinbox = new QSpinBox();
     spinbox->setMaximum(1000);
-    spinbox->setMinimum(-1000);
+    spinbox->setMinimum(0);
     label = new QLabel();
 
     slider1 = new QSlider(Qt::Horizontal);

@@ -11,14 +11,10 @@ public:
     explicit DrawWidget(QWidget *parent = 0);
     ~DrawWidget();
 
-
-    int xp;
-    int yp;
-    int r;
-
 signals:
 
 public slots:
+    void savePicture(QString filename);
     void setX(int);
     void setY(int);
     void setR(int);

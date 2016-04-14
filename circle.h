@@ -1,42 +1,28 @@
 #ifndef CIRCLE_H
 #define CIRCLE_H
 
-#include <QImage>
 #include <QObject>
-#include <QPainter>
+#include <QImage>
 
-#include <QWidget>
-#include "circle.h"
-
-class Circle : public QWidget
+class Circle : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit Circle(QWidget *parent = 0);
-    ~Circle();
-
-
-    int x;
-    int y;
-    int r;
-
+  explicit Circle(QObject *parent = 0);
+  void setX(int x);
+  void setY(int y);
+  void setR(int r);
+  void drawByPixels(QImage* pBackBuffer);
+  void drawByLine(QImage * pBackBuffer);
+  void drawLine(int , int , int);
+  int getWidth(int y, int r, int dy);
 signals:
 
 public slots:
-    void setX(int);
-    void setY(int);
-    void setR(int);
-protected:
-
-void paintEvent(QPaintEvent *event);
-
 private:
-
-
-QPainter *painter;
-QImage *backBuffer;
-
-
+  int x_center;
+  int y_center;
+  int r;
 };
 
 #endif // CIRCLE_H

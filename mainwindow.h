@@ -19,6 +19,8 @@ private:
     ControlPanelWidget *controlpanelwidget;
     QHBoxLayout *layout;
     void saveConfig();
+    void loadConfig();
+    void saveImage();
 
 };
 

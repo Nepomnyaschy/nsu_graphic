@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-
+#include "config.h"
 
 #include <QMenuBar>
 #include <QAction>
@@ -10,18 +10,17 @@
 #include <QJsonArray>
 #include <QByteArray>
 
-QJsonDocument* saveJson(int x, int y, int r, int height, int width);
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    printf("Hello");
     drawwidget = new DrawWidget(this);
     controlpanelwidget = new ControlPanelWidget(this);
     layout = new QHBoxLayout(this);
     auto centralWidget = new QWidget(this);
 
+    setMinimumHeight(400);
+    setMinimumWidth(400);
     setCentralWidget(centralWidget);
     resize(800, 600);
 
@@ -35,61 +34,66 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto actionLoad = new QAction(tr("Load"), menu);
     auto actionSave = new QAction(tr("Save"), menu);
+    auto actionToPicture = new QAction(tr("png"), menu);
 
     menu->addAction(actionSave);
     menu->addAction(actionLoad);
+    menu->addAction(actionToPicture);
 
     connect(actionSave, &QAction::triggered, this, &MainWindow::saveConfig);
+    connect(actionLoad, &QAction::triggered, this, &MainWindow::loadConfig);
+    connect(actionToPicture, &QAction::triggered, this, &MainWindow::saveImage);
 
     connect(controlpanelwidget, &ControlPanelWidget::RChanged, drawwidget , &DrawWidget::setR);
     connect(controlpanelwidget, &ControlPanelWidget::XChanged, drawwidget , &DrawWidget::setX);
     connect(controlpanelwidget, &ControlPanelWidget::YChanged, drawwidget , &DrawWidget::setY);
 }
 
+void MainWindow::loadConfig()
+{
+    QString fileName = QFileDialog::getOpenFileName(
+        this, tr("Load file"), QDir::currentPath(), tr("All files (*.json)")
+    );
+    if (fileName.isEmpty()) return;
+    QMap<QString, int> configMap;
+    Config::loadJson(fileName, configMap);
+
+    drawwidget->resize(configMap["width"], configMap["height"]);
+    drawwidget->setX(configMap["x"]);
+    drawwidget->setY(configMap["y"]);
+    drawwidget->setR(configMap["r"]);
+}
+
+void MainWindow::saveImage()
+{
+    QString filename = QFileDialog::getSaveFileName(
+                this, tr("save image"), QDir::currentPath(), tr("All files (*.png)"));
+
+    if(filename.isEmpty()) return;
+
+    drawwidget->savePicture(filename);
+
+}
+
 void MainWindow::saveConfig()
 {
     QString filename = QFileDialog::getSaveFileName(
-                this, tr("save file"), QDir::currentPath(), tr(".json"));
+                this, tr("save file"), QDir::currentPath(), tr("All files (*.json)"));
 
     if(filename.isEmpty()) return;
 
     QFile savefile(filename);
     savefile.open(QFile::WriteOnly | QFile::Text);
 
-    auto jsonDocument = saveJson(controlpanelwidget->getX(),
-                                 controlpanelwidget->getY(),
-                                 controlpanelwidget->getR(),
-                                 drawwidget->height(),
-                                 drawwidget->width());
+    auto jsonDocument = Config::saveJson(controlpanelwidget->getX(),
+                                         controlpanelwidget->getY(),
+                                         controlpanelwidget->getR(),
+                                         drawwidget->height(),
+                                         drawwidget->width());
     savefile.write(jsonDocument->toJson());
 
 }
 
-QJsonDocument* saveJson(int x, int y, int r, int height, int width)
-{
-    QJsonObject jsonObject;
-    QJsonArray jsonCircles;
-    QJsonObject jsonPosition;
-    QJsonObject jsonPanel;
-    QJsonObject jsonSize;
-    QJsonObject jsonCircle;
-
-    jsonPosition["x"] = x;
-    jsonPosition["y"] = y;
-    jsonCircle["r"] = r;
-    jsonCircle["position"] = jsonPosition;
-    jsonCircles.append(jsonCircle);
-
-    jsonSize["x"] = height;
-    jsonSize["y"] = width;
-    jsonPanel["size"] = jsonSize;
-
-    jsonObject["circles"] = jsonCircles;
-    jsonObject["panel"] = jsonPanel;
-
-    return new QJsonDocument(jsonObject);
-
-}
 
 MainWindow::~MainWindow()
 {
