@@ -10,16 +10,17 @@ int main(int argc, char *argv[])
     {
         QMap<QString, int> map;
         Config::loadJson(QString(argv[1]), map);
-        Circle *circle = new Circle();
+        Lemniscate *lemniscate = new Lemniscate();
         Canvas canvas;
-        circle->setX(map["x"]);
-        circle->setY(map["y"]);
-        circle->setR(map["r"]);
-        canvas.saveImageFromCmd(circle, QString(argv[2]), map["width"], map["height"]);
+        lemniscate->setX1(map["x1"]);
+        lemniscate->setX2(map["x2"]);
+        lemniscate->setY1(map["y1"]);
+        lemniscate->setY2(map["y2"]);
+        canvas.saveImageFromCmd(lemniscate, QString(argv[2]), map["width"], map["height"]);
         return 0;
     }
     QApplication a(argc, argv);
-	MainWindow wdgt;
+    MainWindow wdgt;
     wdgt.show();
 
     return a.exec();

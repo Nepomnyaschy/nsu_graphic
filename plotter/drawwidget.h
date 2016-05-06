@@ -2,7 +2,8 @@
 #define DRAWWIDGET_H
 
 #include <QWidget>
-#include "circle.h"
+#include "lemniscate.h"
+#include "coordinatesystem.h"
 
 class DrawWidget : public QWidget
 {
@@ -15,9 +16,10 @@ signals:
 
 public slots:
     void savePicture(QString filename);
-    void setX(int);
-    void setY(int);
-    void setR(int);
+    void setX1(int);
+    void setX2(int);
+    void setY1(int);
+    void setY2(int);
 protected:
 
 void paintEvent(QPaintEvent *event);
@@ -27,7 +29,8 @@ private:
 
 QPainter *painter;
 QImage *backBuffer;
-Circle *circle;
+Lemniscate *lemniscate;
+CoordinateSystem *axes;
 
 
 };

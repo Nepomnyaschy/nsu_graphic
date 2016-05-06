@@ -10,7 +10,7 @@
 
 namespace Config
 {
-    QJsonDocument* saveJson(int x, int y, int r, int height, int width);
+    QJsonDocument* saveJson(int x1, int x2, int y1, int y2, int height, int width);
     void loadJson(QString fileName, QMap<QString, int>& map);
 }
 

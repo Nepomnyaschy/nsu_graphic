@@ -12,19 +12,22 @@ class ControlPanelWidget : public QWidget
 public:
     explicit ControlPanelWidget(QWidget *parent = 0);
     ~ControlPanelWidget();
-    int getR() {return R;}
-    int getX() {return X;}
-    int getY() {return Y;}
+    int getX1() {return X1;}
+    int getX2() {return X2;}
+    int getY1() {return Y1;}
+    int getY2() {return Y2;}
 
 signals:
-    void RChanged(int newr);
-    void XChanged(int newx);
-    void YChanged(int newy);
+    void X1Changed(int newx1);
+    void X2Changed(int newx2);
+    void Y1Changed(int newy1);
+    void Y2Changed(int newy2);
 
 public slots:
-    void setR(int r);
-    void setX(int x);
-    void setY(int y);
+    void setX1(int x1);
+    void setX2(int x2);
+    void setY1(int y1);
+    void setY2(int y2);
 
 protected:
 
@@ -42,10 +45,15 @@ private:
    QSpinBox* spinbox2;
    QLabel* label2;
 
+   QSlider* slider3;
+   QSpinBox* spinbox3;
+   QLabel* label3;
 
-   int R;
-   int X;
-   int Y;
+
+   int X1;
+   int X2;
+   int Y1;
+   int Y2;
 };
 
 #endif // CONTROLPANELWIDGET_H

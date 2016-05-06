@@ -1,30 +1,34 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2016-03-17T18:08:23
+# Project created by QtCreator 2016-04-15T02:06:36
 #
 #-------------------------------------------------
 
-QT       += core
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = lab1dot2
+TARGET = lab2dot1
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    drawwidget.cpp \
+    canvas.cpp \
+    config.cpp \
     controlpanelwidget.cpp \
-    circle.cpp \
-    config.cpp  \
-    canvas.cpp
+    drawwidget.cpp \
+    lemniscate.cpp \
+    point.cpp \
+    coordinatesystem.cpp
 
 HEADERS  += mainwindow.h \
-    drawwidget.h \
+    canvas.h \
+    config.h \
     controlpanelwidget.h \
-    circle.h \
-    config.h  \
-    canvas.h
+    drawwidget.h \
+    lemniscate.h \
+    point.h \
+    coordinatesystem.h
 
 CONFIG += c++11

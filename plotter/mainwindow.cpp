@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     setMinimumHeight(400);
     setMinimumWidth(400);
     setCentralWidget(centralWidget);
-    resize(800, 600);
+    resize(1200, 700);
 
     layout->addWidget(drawwidget);
     layout->addWidget(controlpanelwidget, 0 , Qt::AlignTop);
@@ -44,9 +44,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(actionLoad, &QAction::triggered, this, &MainWindow::loadConfig);
     connect(actionToPicture, &QAction::triggered, this, &MainWindow::saveImage);
 
-    connect(controlpanelwidget, &ControlPanelWidget::RChanged, drawwidget , &DrawWidget::setR);
-    connect(controlpanelwidget, &ControlPanelWidget::XChanged, drawwidget , &DrawWidget::setX);
-    connect(controlpanelwidget, &ControlPanelWidget::YChanged, drawwidget , &DrawWidget::setY);
+    connect(controlpanelwidget, &ControlPanelWidget::X1Changed, drawwidget , &DrawWidget::setX1);
+    connect(controlpanelwidget, &ControlPanelWidget::X2Changed, drawwidget , &DrawWidget::setX2);
+    connect(controlpanelwidget, &ControlPanelWidget::Y1Changed, drawwidget , &DrawWidget::setY1);
+    connect(controlpanelwidget, &ControlPanelWidget::Y2Changed, drawwidget , &DrawWidget::setY2);
 }
 
 void MainWindow::loadConfig()
@@ -59,9 +60,10 @@ void MainWindow::loadConfig()
     Config::loadJson(fileName, configMap);
 
     drawwidget->resize(configMap["width"], configMap["height"]);
-    drawwidget->setX(configMap["x"]);
-    drawwidget->setY(configMap["y"]);
-    drawwidget->setR(configMap["r"]);
+    drawwidget->setX1(configMap["x1"]);
+    drawwidget->setX2(configMap["x2"]);
+    drawwidget->setY1(configMap["y1"]);
+    drawwidget->setY2(configMap["y2"]);
 }
 
 void MainWindow::saveImage()
@@ -85,9 +87,10 @@ void MainWindow::saveConfig()
     QFile savefile(filename);
     savefile.open(QFile::WriteOnly | QFile::Text);
 
-    auto jsonDocument = Config::saveJson(controlpanelwidget->getX(),
-                                         controlpanelwidget->getY(),
-                                         controlpanelwidget->getR(),
+    auto jsonDocument = Config::saveJson(controlpanelwidget->getX1(),
+                                         controlpanelwidget->getX2(),
+                                         controlpanelwidget->getY1(),
+                                         controlpanelwidget->getY2(),
                                          drawwidget->height(),
                                          drawwidget->width());
     savefile.write(jsonDocument->toJson());

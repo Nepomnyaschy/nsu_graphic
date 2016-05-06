@@ -3,13 +3,16 @@
 #include <QGroupBox>
 #include <QPainter>
 #include <QString>
+#include <QDebug>
 #include <math.h>
 
 
 DrawWidget::DrawWidget(QWidget *parent) :
     QWidget(parent)
 {
-    circle = new Circle(this);
+//    circle = new Circle(this);
+    lemniscate = new Lemniscate(this);
+    axes = new CoordinateSystem();
 
     auto box = new QGroupBox("DrawWidget");
     auto boxWrapper = new QVBoxLayout();
@@ -19,21 +22,28 @@ DrawWidget::DrawWidget(QWidget *parent) :
 
 }
 
-void DrawWidget::setX(int x)
+void DrawWidget::setX1(int x)
 {
- circle->setX(-x);
+ lemniscate->setX1(x);
  QWidget::update();
 }
 
-void DrawWidget::setY(int y)
+
+void DrawWidget::setX2(int x)
 {
- circle->setY(-y);
+ lemniscate->setX2(x);
  QWidget::update();
 }
 
-void DrawWidget::setR(int radius)
+void DrawWidget::setY1(int y)
 {
- circle->setR(radius);
+ lemniscate->setY1(y);
+ QWidget::update();
+}
+
+void DrawWidget::setY2(int y)
+{
+ lemniscate->setY2(y);
  QWidget::update();
 }
 
@@ -41,8 +51,9 @@ void DrawWidget::paintEvent(QPaintEvent *)
 {
     painter = new QPainter(this);
     backBuffer =  new QImage(width(), height(), QImage::Format_RGB888);
-//    circle->drawByPixels(backBuffer);
-    circle->drawByLine(backBuffer);
+    axes->draw(backBuffer);
+    lemniscate->draw(backBuffer);
+
     painter->drawImage(0,0, *backBuffer);
 }
 
@@ -50,7 +61,10 @@ void DrawWidget::savePicture(QString filename)
 {
     painter = new QPainter(this);
     backBuffer =  new QImage(width(), height(), QImage::Format_RGB888);
-    circle->drawByPixels(backBuffer);
+
+    axes->draw(backBuffer);
+    lemniscate->draw(backBuffer);
+
     backBuffer->save(filename, "png");
 }
 
