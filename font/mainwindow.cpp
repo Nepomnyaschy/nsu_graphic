@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
     setMinimumWidth(400);
     setCentralWidget(centralWidget);
     resize(1200, 720);
+    this->setMouseTracking(true);
+    drawwidget->setMouseTracking(true);
 
     layout->addWidget(drawwidget);
     layout->addWidget(controlpanelwidget, 0 , Qt::AlignTop);
@@ -44,15 +46,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(actionLoad, &QAction::triggered, this, &MainWindow::loadConfig);
     connect(actionToPicture, &QAction::triggered, this, &MainWindow::saveImage);
 
-    connect(controlpanelwidget, &ControlPanelWidget::X1Changed, drawwidget , &DrawWidget::setX1);
-    connect(controlpanelwidget, &ControlPanelWidget::X2Changed, drawwidget , &DrawWidget::setX2);
-    connect(controlpanelwidget, &ControlPanelWidget::Y1Changed, drawwidget , &DrawWidget::setY1);
-    connect(controlpanelwidget, &ControlPanelWidget::Y2Changed, drawwidget , &DrawWidget::setY2);
+    connect(controlpanelwidget, &ControlPanelWidget::XChanged, drawwidget , &DrawWidget::setX);
+    connect(controlpanelwidget, &ControlPanelWidget::YChanged, drawwidget , &DrawWidget::setY);
+    connect(controlpanelwidget, &ControlPanelWidget::ScaleChanged, drawwidget , &DrawWidget::setScale);
+
+    connect(drawwidget, SIGNAL(glyphShifted(QPoint)), controlpanelwidget, SLOT(shift(QPoint)));
 }
 
 void MainWindow::loadConfig()
 {
-    QString fileName = QFileDialog::getOpenFileName(
+   /* QString fileName = QFileDialog::getOpenFileName(
         this, tr("Load file"), QDir::currentPath(), tr("All files (*.json)")
     );
     if (fileName.isEmpty()) return;
@@ -63,7 +66,7 @@ void MainWindow::loadConfig()
     drawwidget->setX1(configMap["x1"]);
     drawwidget->setX2(configMap["x2"]);
     drawwidget->setY1(configMap["y1"]);
-    drawwidget->setY2(configMap["y2"]);
+    drawwidget->setY2(configMap["y2"]);*/
 }
 
 void MainWindow::saveImage()
@@ -79,7 +82,7 @@ void MainWindow::saveImage()
 
 void MainWindow::saveConfig()
 {
-    QString filename = QFileDialog::getSaveFileName(
+    /*QString filename = QFileDialog::getSaveFileName(
                 this, tr("save file"), QDir::currentPath(), tr("All files (*.json)"));
 
     if(filename.isEmpty()) return;
@@ -93,7 +96,7 @@ void MainWindow::saveConfig()
                                          controlpanelwidget->getY2(),
                                          drawwidget->height(),
                                          drawwidget->width());
-    savefile.write(jsonDocument->toJson());
+    savefile.write(jsonDocument->toJson());*/
 
 }
 

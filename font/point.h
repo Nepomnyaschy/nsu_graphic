@@ -23,7 +23,7 @@ public:
     int getY();
 
 
-    void drawPoint(QImage *pBackBuffer);
+    void drawPoint(QImage *pBackBuffer, int x1, int y1, int scale);
 
     Point operator-(const Point& point) const;
     Point operator+(const Point& point) const;
@@ -35,6 +35,9 @@ public:
 
     int x;
     int y;
+
+    int xorig;
+    int yorig;
     bool oncurve;
 
 };

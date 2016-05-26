@@ -43,12 +43,14 @@ void Glyph::loadFromJson(QString filename)
 
                Point *p = new Point();
                p->x = position["x"].toInt();
+               p->xorig = position["x"].toInt();
                p->y = position["y"].toInt();
+               p->yorig = position["y"].toInt();
                p->oncurve = pointObject["oncurve"].toBool();
 
 
-               p->x = static_cast<int>(p->x/scale);
-               p->y = static_cast<int>(p->y/scale);
+               //p->x = static_cast<int>(p->x/scale);
+               //p->y = static_cast<int>(p->y/scale);
 
 
                glyphpoints.push_back(p);

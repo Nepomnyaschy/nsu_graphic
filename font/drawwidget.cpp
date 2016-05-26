@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QDir>
+#include <QApplication>
+#include <QMouseEvent>
 #include <math.h>
 
 
@@ -16,6 +18,7 @@ DrawWidget::DrawWidget(QWidget *parent) :
 //    lemniscate = new Lemniscate(this);
 
     Glyph *glyph = new Glyph();
+    //QString fileName = "C:\\dev\\qt\\lab2dot1\\simle.json";
     QString fileName = "C:\\dev\\qt\\lab2dot1\\glyph_sample.json";
 
    /* QString fileName = QFileDialog::getOpenFileName(
@@ -35,41 +38,41 @@ DrawWidget::DrawWidget(QWidget *parent) :
     boxWrapper->addWidget(box);
     setLayout(boxWrapper);
 
+
 }
 
-void DrawWidget::setX1(int x)
+void DrawWidget::setX(int x)
 {
- //lemniscate->setX1(x);
+ font->glyph->x = x;
  QWidget::update();
 }
 
 
-void DrawWidget::setX2(int x)
+void DrawWidget::setY(int y)
 {
- //lemniscate->setX2(x);
+
+ font->glyph->y = y;
  QWidget::update();
 }
 
-void DrawWidget::setY1(int y)
+void DrawWidget::setScale(int scale)
 {
- //lemniscate->setY1(y);
+ //scale = scale > 0 ? 1 + scale / 100.0 : 1 + scale / 1000.0;
+ /*font->glyph->scale = scale > 0 ? 1 + scale / 100.0 : 1 + scale / 1000.0;
+ foreach (auto p, font->glyph->glyphpoints) {
+     p->x = static_cast<int>(p->xorig * font->glyph->scale);
+     p->y = static_cast<int>(p->yorig * font->glyph->scale);
+ }*/
  QWidget::update();
 }
 
-void DrawWidget::setY2(int y)
-{
- //lemniscate->setY2(y);
- QWidget::update();
-}
 
 void DrawWidget::paintEvent(QPaintEvent *)
 {
     painter = new QPainter(this);
     backBuffer =  new QImage(width(), height(), QImage::Format_RGB888);
     axes->draw(backBuffer);
-    //lemniscate->draw(backBuffer);
     font->draw(backBuffer);
-
     painter->drawImage(0,0, *backBuffer);
 }
 
@@ -79,13 +82,37 @@ void DrawWidget::savePicture(QString filename)
     backBuffer =  new QImage(width(), height(), QImage::Format_RGB888);
 
     axes->draw(backBuffer);
-    //lemniscate->draw(backBuffer);
-
+    font->draw(backBuffer);
     backBuffer->save(filename, "png");
+}
+
+void DrawWidget::mousePressEvent(QMouseEvent *event)
+{
+    qDebug() << "press event";
+    if (event->button() == Qt::LeftButton) {
+       startPosition = event->pos();
+         qDebug() << "click ";
+     }
+}
+
+void DrawWidget::mouseMoveEvent(QMouseEvent * event) {
+    if (!(event->buttons() & Qt::LeftButton))
+    {
+        qDebug() << "not left button";
+            return;
+    }
+    if ((event->pos() - startPosition).manhattanLength() < QApplication::startDragDistance())
+    {
+        qDebug() << "too few length";
+            return;
+    }
+    QPoint shift = event->pos() - startPosition;
+    startPosition = event->pos();
+    qDebug() << "check";
+    emit glyphShifted(shift);
 }
 
 
 DrawWidget::~DrawWidget()
 {
-
 }

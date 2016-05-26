@@ -66,14 +66,14 @@ int Point::getY()
     return y;
 }
 
-void Point::drawPoint(QImage *pBackBuffer)
+void Point::drawPoint(QImage *pBackBuffer, int x1, int y1, int scale)
 {
 
     int delta_x = 0;
     int delta_y = 0;
 
-        delta_x = x + pBackBuffer->width() / 2;
-        delta_y = y + pBackBuffer->height() / 2;
+        delta_x = x + pBackBuffer->width() / 2 + x1;
+        delta_y = y + pBackBuffer->height() / 2 + y1;
 
         if (delta_x > 0 &&
             delta_x < pBackBuffer->width() &&

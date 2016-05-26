@@ -14,6 +14,8 @@ void Font::draw(QImage *pBackBuffer)
     Point * next;
     Point * cur;
 
+    lines_2_points.clear();
+    lines_3_points.clear();
 
        if (glyph->outline)
        {
@@ -21,9 +23,9 @@ void Font::draw(QImage *pBackBuffer)
             for(int i = 0; i < glyph->glyphpoints.size(); i++)
             {
                 cur = glyph->glyphpoints.at(i);
-                cur->drawPoint(pBackBuffer);
+                cur->drawPoint(pBackBuffer, glyph->x, glyph->y, glyph->scale);
 
-                if(i !=  glyph->glyphpoints.size() - 1)
+                if(i != glyph->glyphpoints.size() - 1)
                 {
                     next = glyph->glyphpoints.at(i + 1);
                 }
@@ -55,6 +57,7 @@ void Font::draw(QImage *pBackBuffer)
 
        if(glyph->fill)
        fill(pBackBuffer);
+
 }
 
 void Font::line(Point* from, Point* to, QImage *pBackBuffer)
@@ -78,7 +81,7 @@ void Font::line(Point* from, Point* to, QImage *pBackBuffer)
        if (length == 0)
        {
              p->x = x1; p->y = y1;
-             p->drawPoint(pBackBuffer);
+             p->drawPoint(pBackBuffer, glyph->x, glyph->y, glyph->scale);
        }
 
        if (lengthY <= lengthX)
@@ -91,7 +94,7 @@ void Font::line(Point* from, Point* to, QImage *pBackBuffer)
              while(length--)
              {
                    p->x = x; p->y = y;
-                   p->drawPoint(pBackBuffer);
+                   p->drawPoint(pBackBuffer, glyph->x, glyph->y, glyph->scale);
                    x += dx;
                    d += 2 * lengthY;
                    if (d > 0) {
@@ -110,7 +113,7 @@ void Font::line(Point* from, Point* to, QImage *pBackBuffer)
              while(length--)
              {
                    p->x = x; p->y = y;
-                   p->drawPoint(pBackBuffer);
+                   p->drawPoint(pBackBuffer, glyph->x, glyph->y, glyph->scale);
                    y += dy;
                    d += 2 * lengthX;
                    if (d > 0) {
@@ -119,13 +122,14 @@ void Font::line(Point* from, Point* to, QImage *pBackBuffer)
                    }
              }
        }
+
+       delete p;
 }
 
 void Font::bezE(Point *from, Point *help, Point *to, QImage *pBackBuffer)
 {
 
-       int coef = 500;
-
+        int steps = 900;
 
         Point deltastart;
         deltastart.x = from->x - help->x;
@@ -136,35 +140,42 @@ void Font::bezE(Point *from, Point *help, Point *to, QImage *pBackBuffer)
 
 
         Point curstart;
-        curstart.x = coef * from->x;
-        curstart.y = coef * from->y;
+        curstart.x = steps * from->x;
+        curstart.y = steps * from->y;
         Point curend;
-        curend.x = coef * help->x;
-        curend.y =  coef * help->y;
+        curend.x = steps * help->x;
+        curend.y =  steps * help->y;
         Point curdelta;
         Point *cur = new Point();
-        for (int t =0; t <= coef; t++) {
+        for (int t =0; t <= steps; t++)
+        {
             curstart = curstart - deltastart;
             curend = curend - deltaend;
 
-            curdelta.x = (curend.x - curstart.x) / coef;
-            curdelta.y = (curend.y - curstart.y) / coef;
+            curdelta.x = (curend.x - curstart.x) / steps;
+            curdelta.y = (curend.y - curstart.y) / steps;
 
-            cur->x = (curstart.x + t * curdelta.x) / coef;
-            cur->y = (curstart.y + t * curdelta.y) / coef;
+            cur->x = (curstart.x + t * curdelta.x) / steps;
+            cur->y = (curstart.y + t * curdelta.y) / steps;
 
-            cur->drawPoint(pBackBuffer);
+            cur->drawPoint(pBackBuffer, glyph->x, glyph->y, glyph->scale);
         }
 }
 
 void Font::fill(QImage *pBackBuffer)
 {
+   auto yminmax = std::minmax_element(glyph->glyphpoints.begin(), glyph->glyphpoints.end(),[](Point* a, Point* b) { return a->y > b->y; });
+
+   std::vector<int> intersections;
    Point *online1;
    Point *online2;
    Point *online3;
-   for(int y = 1 ; y < (pBackBuffer->byteCount()/pBackBuffer->bytesPerLine()) - 2 ; y++)
+
+   for (int y = (*yminmax.first)->y; y > (*yminmax.second)->y; y--) {
    {
-       intersections.clear();
+
+
+      intersections.clear();
        foreach (auto line, lines_2_points) {
            online1 = line.at(0);
            online2 = line.at(1);
@@ -173,73 +184,79 @@ void Font::fill(QImage *pBackBuffer)
            {
                 int x = online1->x + ((y - online1->y) * (online2->x - online1->x)) / (online2->y - online1->y);
                 intersections.push_back(x);
-                //qDebug() << x;
            }
        }
 
        foreach (auto line, lines_3_points) {
            online1 = line.at(0);
            online2 = line.at(1);
-           online2 = line.at(2);
+           online3 = line.at(2);
 
-           int center = 0.25 * online1->y + 0.5 * online2->y + 0.25 * online3->y;
-           if(y <= std::max(std::max(online1->y, center), online3->y) && y > std::min(std::min(online1->y, center), online3->y))
-           {
+           int ycenter = 0.25 * online1->y + 0.5 * online2->y + 0.25 * online3->y;
+           if (y <= std::max(std::max(online1->y, ycenter), online3->y) && y > std::min(std::min(online1->y, ycenter), online3->y)) {
                intersections.push_back(findBezEPoint(online1, online2, online3, y));
            }
-       }
+        }
 
-
-       std::sort(intersections.begin(), intersections.end());
-       if (intersections.size() % 2 == 0) {
-           for (int i = 0; i < intersections.size(); i += 2) {
-               drawHorizon(pBackBuffer, intersections.at(i), intersections.at(i + 1), y);
-           }
+            if (intersections.size() % 2 == 0)
+            {
+               std::sort(intersections.begin(), intersections.end());
+               for (size_t i = 0; i < intersections.size(); i += 2)
+                {
+                   drawHorizon(pBackBuffer, intersections.at(i), intersections.at(i+1), y);
+                }
+            }
        }
    }
 }
 
-void Font::drawHorizon(QImage *pBackBuffer, int from, int to, int y)
+void Font::drawHorizon(QImage *pBackBuffer, int xFrom, int xTo, int y)
 {
-    from = from + pBackBuffer->width() / 2;
-    to = to + pBackBuffer->width() / 2;
-    y = y + pBackBuffer->height() / 2;
+        xFrom = xFrom + pBackBuffer->width()/2 + glyph->x;
+        xTo = xTo + pBackBuffer->width()/2 + glyph->x;
 
-    if (y < 0 || y >= pBackBuffer->height()) {
-           return;
-       }
-       if (from < 0) {
-           from = 0;
-       }
-       if (from >= pBackBuffer->width()) {
-           from = pBackBuffer->width() - 1;
-       }
-       if (to < 0) {
-           to = 0;
-       }
-       if (to >= pBackBuffer->width()) {
-           to = pBackBuffer->width() - 1;
-       }
+        y = y  + glyph->y + pBackBuffer->height()/2;
 
-         memset(pBackBuffer->bits() +
-                (y * pBackBuffer->bytesPerLine()) + from*3*sizeof(uchar),
-                qRgb(160,160,160),
-                (to - from)*sizeof(uchar)*3);
-}
+        if (y < 0 || y >= pBackBuffer->height()) {
+            return;
+        }
+        if (xFrom < 0) {
+            xFrom = 0;
+        }
+        if (xFrom >= pBackBuffer->width()) {
+            xFrom = pBackBuffer->width() - 1;
+        }
+        if (xTo < 0) {
+            xTo = 0;
+        }
+        if (xTo >= pBackBuffer->width()) {
+            xTo = pBackBuffer->width() - 1;
+        }
+        std::array<uchar , 3> color;
+
+        for (int x = xFrom; x < xTo; x++) {
+            memset(pBackBuffer->bits() + (y * pBackBuffer->bytesPerLine()) + x*3*sizeof(uchar),
+                   qRgb(255, 255, 255),
+                   sizeof(uchar)*3);
+        }
+
+    }
 
 int Font::findBezEPoint(Point *p1, Point *p2, Point *p3, int y)
 {
-    int a = p1->y;
-    int b = p2->y;
-    int c = p3->y;
-    int d = y;
+    int res;
 
-    float t1 = ((a - b) + std::sqrt(- a * c + a * d + b*b + c*d - 2 * b * d)) / a - 2 * b + c;
-    float t2 = ((a - b) - std::sqrt(- a * c + a * d + b*b + c*d - 2 * b * d)) / a - 2 * b + c;
+    int denominator = p1->y - 2 * p2->y + p3->y;
+    float discriminant = denominator * y + sqr(p2->y) - p1->y * p3->y;
+    float discriminantSqrt = std::sqrt(discriminant);
+    float t = (p1->y - p2->y + discriminantSqrt) / denominator;
+    if (t < 0 || t > 1) t = t - (2 * discriminantSqrt / denominator);
+    return ((1 - t) * (1 - t) * p1->x + 2 * t * (1 - t) * p2->x + t * t * p3->x);
 
-    //return (1 - t1) * (1 - t1) * p1->x + 2 * t1 * (1 - t1) * p2->x + t1 * t1 * p3->x;
-    return (1 - t2) * (1 - t2) * p1->x + 2 * t2 * (1 - t2) * p2->x + t2 * t2 * p3->x;
+    return res;
 }
+
+
 
 
 

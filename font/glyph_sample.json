@@ -1,9 +1,9 @@
 {
 	"position": {
-		"x": 0,
-		"y": 0
+		"x": 200,
+		"y": 200
 	},
-	"scale" : 150,
+	"scale" : 0,
 	"fill" : true,
 	"outline" : true,
 	"glyphs" : [

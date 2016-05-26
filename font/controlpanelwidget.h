@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QSlider>
+#include <QPoint>
 
 class ControlPanelWidget : public QWidget
 {
@@ -12,22 +13,21 @@ class ControlPanelWidget : public QWidget
 public:
     explicit ControlPanelWidget(QWidget *parent = 0);
     ~ControlPanelWidget();
-    int getX1() {return X1;}
-    int getX2() {return X2;}
-    int getY1() {return Y1;}
-    int getY2() {return Y2;}
+    int getX() {return X;}
+    int getY() {return Y;}
+    int getScale() {return Scale;}
 
 signals:
-    void X1Changed(int newx1);
-    void X2Changed(int newx2);
-    void Y1Changed(int newy1);
-    void Y2Changed(int newy2);
+    void XChanged(int newx);
+    void YChanged(int newx);
+    void ScaleChanged(int newx);
 
 public slots:
-    void setX1(int x1);
-    void setX2(int x2);
-    void setY1(int y1);
-    void setY2(int y2);
+    void setX(int x);
+    void setY(int y);
+    void setScale(int s);
+    void shift(QPoint p);
+
 
 protected:
 
@@ -45,15 +45,10 @@ private:
    QSpinBox* spinbox2;
    QLabel* label2;
 
-   QSlider* slider3;
-   QSpinBox* spinbox3;
-   QLabel* label3;
 
-
-   int X1;
-   int X2;
-   int Y1;
-   int Y2;
+    int X;
+    int Y;
+    int Scale;
 };
 
 #endif // CONTROLPANELWIDGET_H

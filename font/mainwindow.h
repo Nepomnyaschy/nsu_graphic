@@ -5,6 +5,7 @@
 #include <drawwidget.h>
 #include <controlpanelwidget.h>
 #include <QHBoxLayout>
+#include <QMouseEvent>
 
 class MainWindow : public QMainWindow
 {

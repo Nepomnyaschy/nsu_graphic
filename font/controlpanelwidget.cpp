@@ -1,6 +1,7 @@
 #include "controlpanelwidget.h"
 #include <QVBoxLayout>
 #include <QGroupBox>
+#include <QDebug>
 
 
 ControlPanelWidget::ControlPanelWidget(QWidget *parent) :
@@ -33,13 +34,6 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) :
     spinbox2->setMinimum(-1000);
     label2 = new QLabel();
 
-    slider3 = new QSlider(Qt::Horizontal);
-    slider3->setMinimum(-1000);
-    slider3->setMaximum(1000);
-    spinbox3 = new QSpinBox();
-    spinbox3->setMaximum(1000);
-    spinbox3->setMinimum(-1000);
-    label3 = new QLabel();
 
     auto box = new QGroupBox("Controls");
     auto boxWrapper = new QVBoxLayout();
@@ -55,9 +49,7 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) :
     layout->addWidget(slider2, 6, 0);
     layout->addWidget(spinbox2, 7, 0);
     layout->addWidget(label2, 8, 0);
-    layout->addWidget(slider3, 9, 0);
-    layout->addWidget(spinbox3, 10, 0);
-    layout->addWidget(label3, 11, 0);
+
 
     box->setLayout(layout);
     boxWrapper->addWidget(box);
@@ -66,50 +58,49 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) :
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 
     connect(slider, &QSlider::valueChanged, spinbox, &QSpinBox::setValue);
-    connect(slider, &QSlider::valueChanged, this , &ControlPanelWidget::setX1);
-    connect(spinbox, SIGNAL(valueChanged(int)), slider, SLOT(setValue(int)));
-    connect(spinbox, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
+    connect(slider, &QSlider::valueChanged, this , &ControlPanelWidget::setX);
+    connect(spinbox, SIGNAL(valueChanged(int)), slider, SLOT(setX(int)));
+    connect(spinbox, SIGNAL(valueChanged(int)), this, SLOT(setX(int)));
 
     connect(slider1, &QSlider::valueChanged, spinbox1, &QSpinBox::setValue);
-    connect(slider1, &QSlider::valueChanged, this , &ControlPanelWidget::setX2);
-    connect(spinbox1, SIGNAL(valueChanged(int)), slider1, SLOT(setValue(int)));
-    connect(spinbox1, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
+    connect(slider1, &QSlider::valueChanged, this , &ControlPanelWidget::setY);
+    connect(spinbox1, SIGNAL(valueChanged(int)), slider1, SLOT(setY(int)));
+    connect(spinbox1, SIGNAL(valueChanged(int)), this, SLOT(setY(int)));
 
     connect(slider2, &QSlider::valueChanged, spinbox2, &QSpinBox::setValue);
-    connect(slider2, &QSlider::valueChanged, this , &ControlPanelWidget::setY1);
-    connect(spinbox2, SIGNAL(valueChanged(int)), slider2, SLOT(setValue(int)));
-    connect(spinbox2, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
+    connect(slider2, &QSlider::valueChanged, this , &ControlPanelWidget::setScale);
+    connect(spinbox2, SIGNAL(valueChanged(int)), slider2, SLOT(setScale(int)));
+    connect(spinbox2, SIGNAL(valueChanged(int)), this, SLOT(setScale(int)));
 
-
-    connect(slider3, &QSlider::valueChanged, spinbox3, &QSpinBox::setValue);
-    connect(slider3, &QSlider::valueChanged, this , &ControlPanelWidget::setY2);
-    connect(spinbox3, SIGNAL(valueChanged(int)), slider3, SLOT(setValue(int)));
-    connect(spinbox3, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
 }
 
-void ControlPanelWidget::setX1(int x1)
+void ControlPanelWidget::setX(int x)
 {
-        X1 = x1;
-        emit X1Changed(x1);
+        X = x;
+        emit XChanged(x);
 }
 
-void ControlPanelWidget::setX2(int x2)
+void ControlPanelWidget::setY(int y)
 {
-        X2 = x2;
-        emit X2Changed(x2);
+        Y = y;
+        emit YChanged(y);
 }
 
-void ControlPanelWidget::setY1(int y1)
+void ControlPanelWidget::setScale(int scale)
 {
-        Y1 = y1;
-        emit Y1Changed(y1);
+        Scale = scale;
+        emit ScaleChanged(scale);
 }
 
-void ControlPanelWidget::setY2(int y2)
+void ControlPanelWidget::shift(QPoint p)
 {
-        Y2 = y2;
-        emit Y2Changed(y2);
+    qDebug() << "yo";
+    X += p.x();
+    Y += p.y();
+    emit YChanged(Y);
+    emit XChanged(X);
 }
+
 
 ControlPanelWidget::~ControlPanelWidget()
 {
