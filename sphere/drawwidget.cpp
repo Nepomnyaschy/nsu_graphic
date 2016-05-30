@@ -23,18 +23,18 @@ DrawWidget::DrawWidget(QWidget *parent) :
     sphere = new Sphere();
     axes = new CoordinateSystem();
 
-    auto box = new QGroupBox("DrawWidget");
-    auto boxWrapper = new QVBoxLayout();
-    box->setStyleSheet("QGroupBox { border: 2px solid gray; border-radius: 4px; }");
-    boxWrapper->addWidget(box);
-    setLayout(boxWrapper);
+   // auto box = new QGroupBox("DrawWidget");
+    //auto boxWrapper = new QVBoxLayout();
+    //box->setStyleSheet("QGroupBox { border: 2px solid gray; border-radius: 4px; }");
+   //boxWrapper->addWidget(box);
+   // setLayout(boxWrapper);
 
 
 }
 
 void DrawWidget::setX(int x)
 {
- sphere->X = x;
+ sphere->X = -x;
  QWidget::update();
 }
 
@@ -42,7 +42,7 @@ void DrawWidget::setX(int x)
 void DrawWidget::setY(int y)
 {
 
- sphere->Y = y;
+ sphere->Y = -y;
  QWidget::update();
 }
 

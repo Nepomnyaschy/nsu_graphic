@@ -21,7 +21,7 @@ void Sphere::draw(QImage *pBackBuffer)
         qDebug() << "wrong buffer";
     }
 
-    text = new QImage("C:\\dev\\nsu_graphic\\sphere\\earth.jpg");
+    text = new QImage("C:\\dev\\nsu_graphic\\sphere\\swiborg.jpg");
 
 
 
