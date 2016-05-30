@@ -36,6 +36,7 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) :
 
 
     checkbox1 = new QCheckBox("Filter Biliniar", this);
+    checkbox1->click();
 
 
     auto box = new QGroupBox("Controls");

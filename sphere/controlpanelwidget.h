@@ -34,7 +34,7 @@ public slots:
 
 protected:
 
-private:
+public:
 
    QSlider* slider;
    QSpinBox* spinbox;

@@ -21,17 +21,11 @@ void Sphere::draw(QImage *pBackBuffer)
         qDebug() << "wrong buffer";
     }
 
-    text = new QImage("C:\\dev\\nsu_graphic\\sphere\\swiborg.jpg");
-
-
 
     width = pBackBuffer->width();
     height = pBackBuffer->height();
     bytesperline = pBackBuffer->bytesPerLine();
     uchar *pubBuffer = pBackBuffer->bits();
-
-
-    int r = r1 * (1 + Scale / (Scale > 0 ? 100 : 1000));
 
     std::pair<double, double> uv;
     QRgb color;
@@ -77,8 +71,8 @@ std::pair<double, double> Sphere::getUV(std::pair<int, int> p, int r)
 
 QRgb Sphere::getNearColor(std::pair<double, double> uv)
 {
-        int x = std::round(0.5 + uv.first * text->width() + X);
-        int y = std::round(0.5 + uv.second * text->height() + Y);
+        int x = std::round(0.5 + uv.first * text->width() + X - 1);
+        int y = std::round(0.5 + uv.second * text->height() + Y - 1);
         int x1;
         int y1;
         if(x > 0)
@@ -109,8 +103,8 @@ QRgb Sphere::getBillColor(std::pair<double, double> uv)
         double u = text->width() * uv.first - 0.5;
         double v = text->height() * uv.second - 0.5;
 
-        int x = std::floor(u);
-        int y = std::floor(v);
+        int x = std::round(u);
+        int y = std::round(v);
 
         double u_ratio = u - x;
         double v_ratio = v - y;

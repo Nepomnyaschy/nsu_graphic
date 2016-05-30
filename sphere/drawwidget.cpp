@@ -22,6 +22,8 @@ DrawWidget::DrawWidget(QWidget *parent) :
 
     sphere = new Sphere();
     axes = new CoordinateSystem();
+    sphere->text = new QImage();
+    sphere->text->load("C:\\dev\\nsu_graphic\\sphere\\swiborg.jpg");
 
    // auto box = new QGroupBox("DrawWidget");
     //auto boxWrapper = new QVBoxLayout();
@@ -48,7 +50,9 @@ void DrawWidget::setY(int y)
 
 void DrawWidget::setScale(int scale)
 {
- sphere->Scale = scale;
+ sphere->Scale = scale > 0 ? 1 + scale / 100.0 : 1 + scale / 1000.0;
+ sphere->recalc();
+ qDebug() << "scale";
  QWidget::update();
 }
 

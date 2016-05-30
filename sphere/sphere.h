@@ -18,6 +18,7 @@ public:
   QRgb getBillColor(std::pair<double, double> uv);
   int sqr(int a){return a*a;}
   QColor getColor(int x, int y);
+  void recalc() {r = r1 * Scale;}
 
 
   int r1 = 256;
@@ -28,7 +29,7 @@ public:
 
   int X = 0;
   int Y = 0;
-  int Scale = 0;
+  double Scale;
 
   int shift_x;
   int shift_y;
