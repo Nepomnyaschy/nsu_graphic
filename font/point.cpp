@@ -66,7 +66,7 @@ int Point::getY()
     return y;
 }
 
-void Point::drawPoint(QImage *pBackBuffer, int x1, int y1, int scale)
+void Point::drawPoint(QImage *pBackBuffer, int x1, int y1, double scale)
 {
 
     int delta_x = 0;

@@ -129,7 +129,20 @@ void Font::line(Point* from, Point* to, QImage *pBackBuffer)
 void Font::bezE(Point *from, Point *help, Point *to, QImage *pBackBuffer)
 {
 
-        int steps = 900;
+        int hyp1 = findlen(from, help);
+        int hyp2 = findlen(to, help);
+        int steps = 0;
+
+        if(hyp1 >= hyp2)
+        {
+            steps = hyp1;
+        }
+        else
+        {
+            steps = hyp2;
+        }
+
+
 
         Point deltastart;
         deltastart.x = from->x - help->x;
@@ -146,8 +159,10 @@ void Font::bezE(Point *from, Point *help, Point *to, QImage *pBackBuffer)
         curend.x = steps * help->x;
         curend.y =  steps * help->y;
         Point curdelta;
+        Point *prev = new Point();
         Point *cur = new Point();
-        for (int t =0; t <= steps; t++)
+        int i = 0;
+        for (int t = 0; t <= steps; t++)
         {
             curstart = curstart - deltastart;
             curend = curend - deltaend;
@@ -155,10 +170,18 @@ void Font::bezE(Point *from, Point *help, Point *to, QImage *pBackBuffer)
             curdelta.x = (curend.x - curstart.x) / steps;
             curdelta.y = (curend.y - curstart.y) / steps;
 
-            cur->x = (curstart.x + t * curdelta.x) / steps;
-            cur->y = (curstart.y + t * curdelta.y) / steps;
+            cur->x = static_cast<int>(((curstart.x + (t) * (curdelta.x))) / steps);
+            cur->y = static_cast<int>(((curstart.y + (t) * (curdelta.y))) / steps);
 
-            cur->drawPoint(pBackBuffer, glyph->x, glyph->y, glyph->scale);
+
+            if(i > 0)
+            {
+                line(prev, cur, pBackBuffer);
+            }
+            prev->x = cur->x;
+            prev->y = cur->y;
+
+            i++;
         }
 }
 

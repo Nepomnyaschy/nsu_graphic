@@ -22,6 +22,8 @@ public slots:
     void setX(int);
     void setY(int);
     void setScale(int);
+    void setFill(bool);
+    void setOutline(bool);
 protected:
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);

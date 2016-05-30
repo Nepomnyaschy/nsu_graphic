@@ -10,7 +10,7 @@ class Glyph
 public:
     Glyph();
 
-    int scale;
+    double scale;
     int x;
     int y;
     bool fill;

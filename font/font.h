@@ -18,6 +18,7 @@ public:
   void fill(QImage *pBackBuffer);
   void drawHorizon(QImage *pBackBuffer, int xFrom, int xTo, int y);
   int sqr(int a){return a * a;}
+  int findlen(Point* p1, Point* p2){return std::sqrt(sqr(p1->x - p2->x) + sqr(p1->y - p2->y));}
   int findBezEPoint(Point *p1, Point *p2, Point *p3, int y);
 
 
@@ -26,6 +27,7 @@ public:
 
 
   Glyph *glyph;
+  int Scale;
 
 private:
 

@@ -50,7 +50,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(controlpanelwidget, &ControlPanelWidget::YChanged, drawwidget , &DrawWidget::setY);
     connect(controlpanelwidget, &ControlPanelWidget::ScaleChanged, drawwidget , &DrawWidget::setScale);
 
+    connect(controlpanelwidget, &ControlPanelWidget::XChanged, controlpanelwidget->spinbox, &QSpinBox::setValue);
+    connect(controlpanelwidget, &ControlPanelWidget::YChanged, controlpanelwidget->spinbox1, &QSpinBox::setValue);
+    connect(controlpanelwidget, &ControlPanelWidget::ScaleChanged, controlpanelwidget->spinbox2, &QSpinBox::setValue);
+
+    connect(controlpanelwidget, &ControlPanelWidget::FillChanged, drawwidget, &DrawWidget::setFill);
+    connect(controlpanelwidget, &ControlPanelWidget::OutlineChanged, drawwidget, &DrawWidget::setOutline);
+
     connect(drawwidget, SIGNAL(glyphShifted(QPoint)), controlpanelwidget, SLOT(shift(QPoint)));
+
 }
 
 void MainWindow::loadConfig()

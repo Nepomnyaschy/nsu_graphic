@@ -34,6 +34,10 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) :
     spinbox2->setMinimum(-1000);
     label2 = new QLabel();
 
+    checkbox1 = new QCheckBox("FILL", this);
+    checkbox2 = new QCheckBox("OUTLINE", this);
+
+
 
     auto box = new QGroupBox("Controls");
     auto boxWrapper = new QVBoxLayout();
@@ -49,6 +53,8 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) :
     layout->addWidget(slider2, 6, 0);
     layout->addWidget(spinbox2, 7, 0);
     layout->addWidget(label2, 8, 0);
+    layout->addWidget(checkbox1, 9, 0);
+    layout->addWidget(checkbox2, 10, 0);
 
 
     box->setLayout(layout);
@@ -72,6 +78,10 @@ ControlPanelWidget::ControlPanelWidget(QWidget *parent) :
     connect(spinbox2, SIGNAL(valueChanged(int)), slider2, SLOT(setScale(int)));
     connect(spinbox2, SIGNAL(valueChanged(int)), this, SLOT(setScale(int)));
 
+
+
+    connect(checkbox1, &QCheckBox::clicked, this, &ControlPanelWidget::setFill);
+    connect(checkbox2, &QCheckBox::clicked, this, &ControlPanelWidget::setOutline);
 }
 
 void ControlPanelWidget::setX(int x)
@@ -92,9 +102,20 @@ void ControlPanelWidget::setScale(int scale)
         emit ScaleChanged(scale);
 }
 
+void ControlPanelWidget::setFill(bool b)
+{
+    fill = b;
+    emit FillChanged(fill);
+}
+
+void ControlPanelWidget::setOutline(bool b)
+{
+    outline = b;
+    emit OutlineChanged(outline);
+}
+
 void ControlPanelWidget::shift(QPoint p)
 {
-    qDebug() << "yo";
     X += p.x();
     Y += p.y();
     emit YChanged(Y);

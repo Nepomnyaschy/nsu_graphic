@@ -23,7 +23,7 @@ public:
     int getY();
 
 
-    void drawPoint(QImage *pBackBuffer, int x1, int y1, int scale);
+    void drawPoint(QImage *pBackBuffer, int x1, int y1, double scale);
 
     Point operator-(const Point& point) const;
     Point operator+(const Point& point) const;
@@ -31,6 +31,8 @@ public:
     bool operator<(const Point& point) const;
     Point operator>>(int) const;
     bool operator==(const Point& point) const;
+
+    void recalc(double scale){x = xorig * scale; y = yorig * scale;}
 
 
     int x;

@@ -48,11 +48,6 @@ void Glyph::loadFromJson(QString filename)
                p->yorig = position["y"].toInt();
                p->oncurve = pointObject["oncurve"].toBool();
 
-
-               //p->x = static_cast<int>(p->x/scale);
-               //p->y = static_cast<int>(p->y/scale);
-
-
                glyphpoints.push_back(p);
            }
        }
@@ -60,9 +55,5 @@ void Glyph::loadFromJson(QString filename)
 
        qDebug() << "JSON_LOADER_DONE" ;
        qDebug() << glyphpoints.size();
-
-       /*foreach (auto p, glyphpoints) {
-           qDebug() << p->x  ;
-       }*/
 
 }
